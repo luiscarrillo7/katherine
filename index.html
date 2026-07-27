@@ -64,6 +64,32 @@
         margin: 0;
         font-weight: bold;
       }
+      /* Estilos del Recuadro de Votos Totales */
+      .tarjeta-total {
+        position: absolute; /* Flota sobre el mapa */
+        top: 20px;
+        left: 20px; /* Lo ponemos a la izquierda, opuesto a tu botón */
+        background-color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+        border-left: 6px solid #6f9c76; /* Verde como tu mapa */
+      }
+      .tarjeta-total h3 {
+        margin: 0;
+        font-size: 13px;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .tarjeta-total p {
+        margin: 5px 0 0 0;
+        font-size: 32px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
     </style>
   </head>
   <body>
@@ -327,15 +353,27 @@
         // 1. Cargar los datos desde el JSON
         let datosVotos = {};
         try {
-          // Lee el archivo json que está en la misma carpeta
-          const response = await fetch("votos_por_region2.json");
+          const response = await fetch("votos_por_region.json");
           if (response.ok) {
             datosVotos = await response.json();
+
+            // --- NUEVO: Sumar todos los votos para el total nacional ---
+            let totalPeru = 0;
+            for (const region in datosVotos) {
+              totalPeru += datosVotos[region]; // Suma región por región
+            }
+
+            // Mostrar la suma en el HTML con separador de miles
+            document.getElementById("total-peru-numero").innerText =
+              totalPeru.toLocaleString("es-PE");
+            // -----------------------------------------------------------
           } else {
             console.error("Error al cargar el JSON");
+            document.getElementById("total-peru-numero").innerText = "Error";
           }
         } catch (error) {
           console.error("No se pudo cargar el archivo JSON de votos:", error);
+          document.getElementById("total-peru-numero").innerText = "Error";
         }
 
         // 2. Darle interactividad a cada región
@@ -376,6 +414,11 @@
         });
       });
     </script>
+    <!-- Recuadro del Total Nacional -->
+    <div class="tarjeta-total">
+      <h3>Total Nacional</h3>
+      <p id="total-peru-numero">Cargando...</p>
+    </div>
     <a href="cascada.html" class="btn-consulta"
       >🔍 Consulta Detallada por Mesa</a
     >
