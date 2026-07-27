@@ -353,27 +353,15 @@
         // 1. Cargar los datos desde el JSON
         let datosVotos = {};
         try {
-          const response = await fetch("votos_por_region.json");
+          // Lee el archivo json que está en la misma carpeta
+          const response = await fetch("votos_por_region2.json");
           if (response.ok) {
             datosVotos = await response.json();
-
-            // --- NUEVO: Sumar todos los votos para el total nacional ---
-            let totalPeru = 0;
-            for (const region in datosVotos) {
-              totalPeru += datosVotos[region]; // Suma región por región
-            }
-
-            // Mostrar la suma en el HTML con separador de miles
-            document.getElementById("total-peru-numero").innerText =
-              totalPeru.toLocaleString("es-PE");
-            // -----------------------------------------------------------
           } else {
             console.error("Error al cargar el JSON");
-            document.getElementById("total-peru-numero").innerText = "Error";
           }
         } catch (error) {
           console.error("No se pudo cargar el archivo JSON de votos:", error);
-          document.getElementById("total-peru-numero").innerText = "Error";
         }
 
         // 2. Darle interactividad a cada región
@@ -417,7 +405,7 @@
     <!-- Recuadro del Total Nacional -->
     <div class="tarjeta-total">
       <h3>Total Nacional</h3>
-      <p id="total-peru-numero">Cargando...</p>
+      <p id="total-peru-numero">184,096</p>
     </div>
     <a href="cascada.html" class="btn-consulta"
       >🔍 Consulta Detallada por Mesa</a
