@@ -6,9 +6,12 @@ export default function handler(req, res) {
 
   const { usuario, password } = req.body;
 
-  // AQUÍ DEFINES TUS CREDENCIALES SECRETAS (Puedes agregar más a un array si quieres)
-  const usuarioCorrecto = "admin";
-  const passwordCorrecto = "saep2026";
+  const credenciales = [
+    { usuario: "luis", password: "12345678Lc" },
+    { usuario: "romy", password: "romy1234" },
+    { usuario: "katherine", password: "senado4" },
+    { usuario: "milton", password: "saep" },
+  ];
 
   // Validamos
   if (usuario === usuarioCorrecto && password === passwordCorrecto) {
