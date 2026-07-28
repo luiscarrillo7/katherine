@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estadísticas - Diagrama de Pareto</title>
+    <script>
+      if (!sessionStorage.getItem("saep_token")) {
+        window.location.href = "login.html";
+      }
+    </script>
     <!-- Cargamos la librería Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

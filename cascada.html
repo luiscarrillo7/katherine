@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>Consulta Detallada de Votos</title>
+    <script>
+      if (!sessionStorage.getItem("saep_token")) {
+        window.location.href = "login.html";
+      }
+    </script>
     <style>
       body {
         font-family: Arial, sans-serif;
