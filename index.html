@@ -6,192 +6,174 @@
 
     <!-- 1. AQUÍ PONES EL CSS -->
     <style>
-      /* Estilos del Botón de Consulta */
-      .btn-consulta {
-        position: absolute; /* Para que flote sobre el mapa */
-        top: 20px;
-        right: 20px;
-        background-color: #ff9800; /* Color naranja a juego con tu mapa */
-        color: white;
-        padding: 12px 24px;
-        text-decoration: none;
+      /* --- 1. RESET Y FONDO --- */
+      body {
+        margin: 0;
+        padding: 0;
         font-family: Arial, sans-serif;
-        font-weight: bold;
-        font-size: 16px;
-        border-radius: 8px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-        transition:
-          background-color 0.3s,
-          transform 0.2s;
-        z-index: 1000;
-      }
-      .btn-consulta:hover {
-        background-color: #e68a00;
-        transform: scale(1.05); /* Efecto de crecimiento al pasar el mouse */
-      } /* Estilos del Mapa */
-      #features path {
-        cursor: pointer;
-        transition: fill 0.3s ease;
-      }
-      #features path.activo {
-        fill: #ff9800;
-      }
-      #features path:hover {
-        fill: #85b88d;
+        background-color: #f4f7f6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden; /* Evita la barra de desplazamiento lateral */
+        padding-bottom: 60px; /* Espacio para que el footer no tape el mapa */
       }
 
-      /* Estilos del Cuadro Flotante (Tooltip) */
-      #tooltip {
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        pointer-events: none; /* Evita que el tooltip interfiera con el mouse */
-        opacity: 0; /* Oculto por defecto */
-        transition: opacity 0.2s;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
+      /* --- 2. BARRA SUPERIOR (TOTAL, TÍTULO Y BOTONES) --- */
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 1400px;
+        padding: 20px;
+        box-sizing: border-box;
+        z-index: 100;
       }
-      #tooltip h3 {
-        margin: 0 0 5px 0;
-        font-size: 16px;
-        color: #ff9800;
-      }
-      #tooltip p {
-        margin: 0;
-        font-weight: bold;
-      }
-      /* Estilos del Recuadro de Votos Totales */
+
+      /* Tarjeta Total Nacional */
       .tarjeta-total {
-        position: absolute; /* Flota sobre el mapa */
-        top: 20px;
-        left: 20px; /* Lo ponemos a la izquierda, opuesto a tu botón */
         background-color: white;
         padding: 15px 25px;
         border-radius: 8px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        font-family: Arial, sans-serif;
-        z-index: 1000;
-        border-left: 6px solid #6f9c76; /* Verde como tu mapa */
+        border-left: 6px solid #6f9c76;
+        text-align: center;
+        min-width: 130px;
       }
-      .tarjeta-total h3 {
-        margin: 0;
-        font-size: 13px;
-        color: #7f8c8d;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+      .tarjeta-total h3 { margin: 0; font-size: 11px; color: #7f8c8d; text-transform: uppercase; }
+      .tarjeta-total p { margin: 5px 0 0 0; font-size: 26px; font-weight: bold; color: #2c3e50; }
+
+      /* Título Central */
+      .titulo-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        margin: 0 20px;
       }
-      .tarjeta-total p {
-        margin: 5px 0 0 0;
-        font-size: 32px;
-        font-weight: bold;
-        color: #2c3e50;
-      }
-      .btn-estadistica {
-        position: absolute;
-        top: 70px; /* Debajo del otro botón */
-        right: 20px;
-        background-color: #2c3e50; /* Un color oscuro elegante */
-        color: white;
-        padding: 12px 24px;
-        text-decoration: none;
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        font-size: 16px;
-        border-radius: 8px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-        transition:
-          background-color 0.3s,
-          transform 0.2s;
-        z-index: 1000;
-      }
-      .btn-estadistica:hover {
-        background-color: #1a252f;
-        transform: scale(1.05);
-      }
-      /* Estilos del Encabezado (Título) */
       .encabezado-saep {
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%); /* Para centrarlo perfectamente */
-        background-color: rgba(26, 37, 47, 0.95); /* Azul oscuro casi sólido */
+        background-color: rgba(26, 37, 47, 0.95);
         color: white;
         text-align: center;
-        padding: 15px 40px;
+        padding: 15px 30px;
         border-radius: 8px;
         box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        border-bottom: 4px solid #0088cc; /* Celeste del partido */
+        border-bottom: 4px solid #0088cc;
       }
-      .encabezado-saep h1 {
-        margin: 0;
-        font-size: 22px;
-        font-family: Arial, sans-serif;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-      }
-      .encabezado-saep h2 {
-        margin: 5px 0 0 0;
-        font-size: 15px;
-        color: #f1c40f; /* Dorado para resaltar a la candidata */
-        font-family: Arial, sans-serif;
-        font-weight: normal;
-      }
+      .encabezado-saep h1 { margin: 0; font-size: 20px; letter-spacing: 1px; text-transform: uppercase; }
+      .encabezado-saep h2 { margin: 5px 0 0 0; font-size: 14px; color: #f1c40f; font-weight: normal; }
 
-      /* Estilos del Pie de Página (Footer) */
-      .footer-saep {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: #2c3e50;
-        color: #bdc3c7;
-        text-align: center;
-        padding: 10px 0;
-        font-size: 13px;
-        font-family: Arial, sans-serif;
-        z-index: 1000;
-        box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+      /* Botones Laterales */
+      .botones-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
       }
-      .footer-saep strong {
-        color: #ffffff;
-      }
-
-      /* Estilos de la Foto de la Candidata */
-      .tarjeta-candidata {
-        position: absolute;
-        bottom: 50px; /* Justo arriba del footer */
-        right: 20px; /* En la esquina inferior derecha */
-        width: 160px; /* Ancho de la foto */
-        background: white;
-        padding: 8px;
+      .btn-accion {
+        color: white;
+        padding: 12px 20px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
         border-radius: 8px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-        z-index: 900;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s;
         text-align: center;
-        border-top: 4px solid #0088cc;
       }
-      .tarjeta-candidata img {
+      .btn-consulta { background-color: #ff9800; }
+      .btn-consulta:hover { background-color: #e68a00; transform: scale(1.05); }
+      .btn-estadistica { background-color: #2c3e50; }
+      .btn-estadistica:hover { background-color: #1a252f; transform: scale(1.05); }
+
+      /* --- 3. CONTENEDOR DEL MAPA --- */
+      .mapa-container {
+        width: 100%;
+        max-width: 800px; /* Tamaño máximo del mapa */
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      /* El SVG se ajusta a la pantalla automáticamente */
+      svg {
         width: 100%;
         height: auto;
-        border-radius: 4px;
+        max-height: 75vh;
       }
-      .tarjeta-candidata p {
-        margin: 8px 0 0 0;
-        font-size: 12px;
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        color: #333;
+      #features path { cursor: pointer; transition: fill 0.3s ease; }
+      #features path.activo { fill: #ff9800; }
+      #features path:hover { fill: #85b88d; }
+
+      /* --- 4. EXTRAS (TOOLTIP, FOTO, FOOTER) --- */
+      #tooltip {
+        position: absolute; background-color: rgba(0, 0, 0, 0.8); color: white;
+        padding: 10px 15px; border-radius: 8px; font-size: 14px; pointer-events: none;
+        opacity: 0; transition: opacity 0.2s; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); z-index: 2000;
+      }
+      #tooltip h3 { margin: 0 0 5px 0; font-size: 16px; color: #ff9800; }
+      #tooltip p { margin: 0; font-weight: bold; }
+
+      .tarjeta-candidata {
+        position: fixed; /* Se queda fija en la pantalla */
+        bottom: 50px; right: 20px; width: 140px;
+        background: white; padding: 6px; border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); z-index: 900;
+        text-align: center; border-top: 4px solid #0088cc;
+      }
+      .tarjeta-candidata img { width: 100%; height: auto; border-radius: 4px; }
+      .tarjeta-candidata p { margin: 5px 0 0 0; font-size: 11px; font-weight: bold; color: #333; }
+
+      .footer-saep {
+        position: fixed; bottom: 0; left: 0; width: 100%;
+        background-color: #2c3e50; color: #bdc3c7; text-align: center;
+        padding: 10px 0; font-size: 12px; z-index: 1000; box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .footer-saep strong { color: #ffffff; }
+
+      /* --- 5. RESPONSIVE (CELULARES) --- */
+      @media (max-width: 850px) {
+        .top-bar {
+          flex-direction: column; /* Apila los elementos de arriba a abajo */
+          align-items: center;
+          gap: 15px;
+          padding: 15px;
+        }
+        .titulo-container { margin: 0; order: -1; /* Pone el título arriba de todo */ }
+        .botones-container { flex-direction: row; width: 100%; justify-content: center; }
+        .btn-accion { font-size: 12px; padding: 10px; flex: 1; max-width: 150px; }
+        .tarjeta-candidata { width: 100px; bottom: 45px; right: 10px; }
+        .encabezado-saep h1 { font-size: 16px; }
+        .encabezado-saep h2 { font-size: 12px; }
       }
     </style>
   </head>
   <body>
+    <!-- Cuadro negro de información al pasar el mouse -->
     <div id="tooltip"></div>
-    <!-- 2. AQUÍ PEGAS TODO TU CÓDIGO SVG TAL CUAL ESTÁ -->
+
+    <!-- BARRA SUPERIOR (TOTAL + TÍTULO + BOTONES) -->
+    <header class="top-bar">
+      <!-- 1. Total Nacional -->
+      <div class="tarjeta-total">
+        <h3>Total Nacional</h3>
+        <p id="total-peru-numero">Cargando...</p>
+      </div>
+
+      <!-- 2. Título Central -->
+      <div class="titulo-container">
+        <div class="encabezado-saep">
+          <h1>SISTEMA DE APOYO ELECTORAL PARLAMENTARIO - SAEP</h1>
+          <h2>Katherine Ampuero - Senado Nacional N° 4</h2>
+        </div>
+      </div>
+
+      <!-- 3. Botones -->
+      <div class="botones-container">
+        <a href="cascada.html" class="btn-accion btn-consulta">🔍 Consulta Detallada</a>
+        <a href="estadistica.html" class="btn-accion btn-estadistica">📊 Ver Diagrama de Pareto</a>
+      </div>
+    </header>
+    <main class="mapa-container">
     <svg
       baseprofile="tiny"
       fill="#6f9c76"
@@ -440,50 +422,54 @@
         <circle class="Junín" cx="503.6" cy="603.2" id="PEJUN"></circle>
       </g>
     </svg>
-
+    </main>
     <!-- 3. AQUÍ PONES EL JAVASCRIPT (Justo antes de cerrar el body) -->
+<!-- AQUÍ EMPIEZA EL SCRIPT DEL MAPA -->
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         const regiones = document.querySelectorAll("#features path");
         const tooltip = document.getElementById("tooltip");
+        const textoTotal = document.getElementById("total-peru-numero");
 
         // 1. Cargar los datos desde el JSON
         let datosVotos = {};
         try {
-          // Lee el archivo json que está en la misma carpeta
           const response = await fetch("votos_por_region2.json");
           if (response.ok) {
             datosVotos = await response.json();
+            
+            // Sumar todos los votos para actualizar el recuadro "Total Nacional"
+            let sumaTotal = 0;
+            for (const region in datosVotos) {
+                sumaTotal += datosVotos[region];
+            }
+            textoTotal.innerText = sumaTotal.toLocaleString("es-PE");
+
           } else {
             console.error("Error al cargar el JSON");
+            textoTotal.innerText = "Error";
           }
         } catch (error) {
           console.error("No se pudo cargar el archivo JSON de votos:", error);
+          textoTotal.innerText = "Error";
         }
 
         // 2. Darle interactividad a cada región
         regiones.forEach((region) => {
           // Efecto al pasar el ratón (Mostrar Tooltip con los votos)
           region.addEventListener("mousemove", (event) => {
-            // Obtener el nombre de la región desde el atributo 'name' del SVG
             const nombreRegion = region.getAttribute("name");
-
-            // Buscar los votos en nuestro JSON (si no encuentra datos, muestra 0)
             const votos = datosVotos[nombreRegion] || 0;
-
-            // Formatear el número para que tenga separador de miles (ej. 15,000)
             const votosFormateados = votos.toLocaleString("es-PE");
 
-            // Insertar la información en el tooltip
             tooltip.innerHTML = `
-                        <h3>${nombreRegion}</h3>
-                        <p>Votos: ${votosFormateados}</p>
-                    `;
+                <h3>${nombreRegion}</h3>
+                <p>Votos: ${votosFormateados}</p>
+            `;
 
-            // Mover el tooltip para que siga al ratón
             tooltip.style.left = event.pageX + 15 + "px";
             tooltip.style.top = event.pageY + 15 + "px";
-            tooltip.style.opacity = "1"; // Hacerlo visible
+            tooltip.style.opacity = "1";
           });
 
           // Efecto al sacar el ratón (Ocultar Tooltip)
@@ -491,7 +477,7 @@
             tooltip.style.opacity = "0";
           });
 
-          // Efecto de Clic (Dejar marcado en Naranja, tal como lo tenías)
+          // Efecto de Clic (Dejar marcado en Naranja)
           region.addEventListener("click", function () {
             regiones.forEach((r) => r.classList.remove("activo"));
             this.classList.add("activo");
@@ -499,34 +485,13 @@
         });
       });
     </script>
-    <!-- Recuadro del Total Nacional -->
-    <div class="tarjeta-total">
-      <h3>Total Nacional</h3>
-      <p id="total-peru-numero">184,096</p>
-    </div>
-    <a href="cascada.html" class="btn-consulta"
-      >🔍 Consulta Detallada por Mesa</a
-    >
-    <a href="estadistica.html" class="btn-estadistica"
-      >📊 Ver Diagrama de Pareto</a
-    >
-    <!-- Encabezado Principal -->
-    <div class="encabezado-saep">
-      <h1>Sistema de Apoyo Electoral Parlamentario - SAEP</h1>
-      <h2>Katherine Ampuero - Senado Nacional N° 4</h2>
-    </div>
+  </body>
+</html>
 
-    <!-- Foto Flotante de la Candidata -->
-    <div class="tarjeta-candidata">
-      <!-- Asegúrate de que el archivo images.jpg esté en la misma carpeta que tu index.html -->
-      <img src="images.jpg" alt="Katherine Ampuero" />
-      <p>Senado Nacional</p>
-    </div>
 
-    <!-- Pie de Página / Derechos del Sistema -->
+    <!-- FOOTER / DERECHOS -->
     <footer class="footer-saep">
-      &copy; 2026 <strong>SAEP</strong> | Los derechos del sistema pertenecen al
-      Informático <strong>Luis Carrillo Nuñez</strong>.
+      &copy; 2026 <strong>SAEP</strong> | Los derechos del sistema pertenecen al Informático <strong>Luis Carrillo Nuñez</strong>.
     </footer>
   </body>
 </html>
