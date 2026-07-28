@@ -262,12 +262,15 @@
 
           try {
             // 1. Consultar a NUESTRO PROPIO SERVIDOR en Vercel
-            const miApiUrl = `/api/consulta?dni=${dni}`;
-            const resOnpe = await fetch(miApiUrl);
+            // 1. Consultar a la API de la ONPE usando AllOrigins (Evasión de bloqueo)
+            const urlDestino = `https://resultadohistorico-eg2026.onpe.gob.pe/presentacion-backend/padron/mesa/${dni}`;
+            const onpeUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(urlDestino)}`;
+
+            const resOnpe = await fetch(onpeUrl);
 
             if (!resOnpe.ok)
               throw new Error(
-                "Error en la conexión con nuestra API en Vercel.",
+                "Error en la conexión con la ONPE a través del proxy.",
               );
 
             const dataOnpe = await resOnpe.json();
