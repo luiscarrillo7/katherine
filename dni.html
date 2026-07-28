@@ -262,18 +262,12 @@
 
           try {
             // 1. Consultar a NUESTRO PROPIO SERVIDOR en Vercel
-            // 1. Consultar a la API de la ONPE usando AllOrigins (Evasión de bloqueo)
-            // 1. Consultar a la API de la ONPE usando ZenRows (Anti-Bot Bypass)
-            const urlDestino = `https://resultadohistorico-eg2026.onpe.gob.pe/presentacion-backend/padron/mesa/${dni}`;
-            const apiKey = "9923d43e077ae99a4fc2fd2c12e158db17125acd"; // Tu clave de ZenRows
+            const miApiUrl = `/api/consulta?dni=${dni}`;
 
-            // Construimos la ruta mágica con el mode=auto
-            const onpeUrl = `https://api.zenrows.com/v1/?apikey=${apiKey}&url=${encodeURIComponent(urlDestino)}&mode=auto`;
-
-            const resOnpe = await fetch(onpeUrl);
+            const resOnpe = await fetch(miApiUrl);
 
             if (!resOnpe.ok)
-              throw new Error("Error en la conexión a través de ZenRows.");
+              throw new Error("Error en la conexión con nuestra API interna.");
 
             const dataOnpe = await resOnpe.json();
 
