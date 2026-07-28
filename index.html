@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>Mapa Animado - SAEP</title>
-
+    <script>
+      if (!sessionStorage.getItem("saep_token")) {
+        window.location.href = "login.html";
+      }
+    </script>
     <style>
       /* --- 1. RESET Y FONDO --- */
       body {
