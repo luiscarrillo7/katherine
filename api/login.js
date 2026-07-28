@@ -8,7 +8,7 @@ export default function handler(req, res) {
 
   const credenciales = [
     { usuario: "luis", password: "12345678Lc" },
-    { usuario: "romy", password: "romy1234" },
+    { usuario: "romy", password: "romy12345" },
     { usuario: "katherine", password: "senado4" },
     { usuario: "milton", password: "saep" },
   ];
