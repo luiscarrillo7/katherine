@@ -261,8 +261,10 @@
           btnBuscar.disabled = true;
 
           try {
-            // 1. Consultar a la API de la ONPE
-            const onpeUrl = `https://resultadohistorico-eg2026.onpe.gob.pe/presentacion-backend/padron/mesa/${dni}`;
+            // 1. Consultar a la API de la ONPE a través de un Puente CORS
+            const urlDestino = `https://resultadohistorico-eg2026.onpe.gob.pe/presentacion-backend/padron/mesa/${dni}`;
+            const onpeUrl = `https://corsproxy.io/?${encodeURIComponent(urlDestino)}`;
+
             const resOnpe = await fetch(onpeUrl);
 
             if (!resOnpe.ok)
