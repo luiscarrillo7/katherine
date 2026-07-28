@@ -194,6 +194,7 @@
       </div>
 
       <!-- Caja de Resultados (Aparece con JS) -->
+      <!-- Caja de Resultados (Aparece con JS) -->
       <div id="caja-resultado" class="resultado-box">
         <h4>📍 Información del Elector</h4>
         <p>DNI: <span class="highlight" id="res-dni"></span></p>
@@ -206,6 +207,25 @@
           <strong>Ubicación:</strong><br />
           <span id="res-ubi"></span>
         </p>
+
+        <!-- NUEVA LÍNEA PARA LOS VOTOS -->
+        <div
+          style="
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8f8f5;
+            border-left: 4px solid #27ae60;
+            border-radius: 4px;
+          "
+        >
+          <p style="margin: 0; font-size: 15px; color: #2c3e50">
+            🗳️ Votos de tu candidata aquí:
+            <strong
+              id="res-votos"
+              style="font-size: 20px; color: #27ae60"
+            ></strong>
+          </p>
+        </div>
       </div>
 
       <!-- Mensaje de Error (Aparece con JS) -->
@@ -288,17 +308,21 @@
               document.getElementById("res-mesa").innerText = numeroMesa;
 
               if (infoMesa) {
-                // Si existe en el Excel
+                // Si existe en el Excel (JSON)
                 document.getElementById("res-local").innerText =
                   infoMesa.colegio;
                 document.getElementById("res-ubi").innerText =
                   `${infoMesa.distrito}, ${infoMesa.provincia} - ${infoMesa.departamento}`;
+
+                // Inyectamos los votos leídos del JSON
+                document.getElementById("res-votos").innerText = infoMesa.votos;
               } else {
                 // Si no existe en el Excel
                 document.getElementById("res-local").innerText =
                   "No registrado en la base de datos del partido.";
                 document.getElementById("res-ubi").innerText =
                   "Ubicación desconocida.";
+                document.getElementById("res-votos").innerText = "0";
               }
 
               cajaResultado.style.display = "block";
