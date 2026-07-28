@@ -467,7 +467,7 @@
         // 1. Cargar los datos desde el JSON
         let datosVotos = {};
         try {
-          const response = await fetch("votos_por_region2.json");
+          const response = await fetch("votos_por_region.json");
           if (response.ok) {
             datosVotos = await response.json();
             
