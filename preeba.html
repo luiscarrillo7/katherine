@@ -206,7 +206,12 @@
       document.addEventListener("DOMContentLoaded", async () => {
         const regiones = document.querySelectorAll("#features path");
         const tooltip = document.getElementById("tooltip");
-
+const credenciales = [
+        { usuario: "luis", password: "12345678Lc" },
+        { usuario: "romy", password: "romy1234" },
+        { usuario: "katherine", password: "senado4" },
+        { usuario: "milton", password: "sanmartin" }
+    ];
         // 1. Cargar los datos desde el JSON
         let datosVotos = {};
         try {
