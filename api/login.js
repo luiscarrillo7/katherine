@@ -13,8 +13,14 @@ export default function handler(req, res) {
     { usuario: "milton", password: "saep" },
   ];
 
-  // Validamos
-  if (usuario === usuarioCorrecto && password === passwordCorrecto) {
+  // Buscamos si existe un usuario y contraseña que coincidan en la lista
+  const usuarioValido = credenciales.find(
+    (credencial) =>
+      credencial.usuario === usuario && credencial.password === password,
+  );
+
+  // Validamos el resultado de la búsqueda
+  if (usuarioValido) {
     // Login exitoso: Devolvemos un token simulado
     return res.status(200).json({
       success: true,
