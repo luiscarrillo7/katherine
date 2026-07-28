@@ -32,19 +32,36 @@
         z-index: 100;
       }
 
-      /* Tarjeta Total Nacional */
+/* Tarjeta Total Nacional y Extranjero */
       .tarjeta-total {
         background-color: white;
-        padding: 15px 25px;
+        padding: 12px 20px;
         border-radius: 8px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         border-left: 6px solid #6f9c76;
-        text-align: center;
-        min-width: 130px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px; /* Espacio entre filas */
+        min-width: 180px;
       }
-      .tarjeta-total h3 { margin: 0; font-size: 11px; color: #7f8c8d; text-transform: uppercase; }
-      .tarjeta-total p { margin: 5px 0 0 0; font-size: 26px; font-weight: bold; color: #2c3e50; }
-
+      .fila-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+      .fila-stat h3 {
+        margin: 0; font-size: 11px; color: #7f8c8d; text-transform: uppercase;
+      }
+      .fila-stat p {
+        margin: 0; font-size: 16px; font-weight: bold; color: #2c3e50;
+      }
+      .linea-divisoria {
+        border: 0; border-top: 1px solid #ddd; margin: 2px 0;
+      }
+      /* Resaltamos el Total General */
+      .total-general h3 { color: #27ae60; font-weight: bold; }
+      .total-general p { font-size: 20px; color: #27ae60; }
       /* Título Central */
       .titulo-container {
         flex: 1;
@@ -156,9 +173,21 @@
     <!-- BARRA SUPERIOR (TOTAL + TÍTULO + BOTONES) -->
     <header class="top-bar">
       <!-- 1. Total Nacional -->
+<!-- 1. Tarjeta de Totales Estáticos -->
       <div class="tarjeta-total">
-        <h3>Total Nacional</h3>
-        <p id="total-peru-numero">Cargando...</p>
+        <div class="fila-stat">
+            <h3>Nacional</h3>
+            <p>184,096</p>
+        </div>
+        <div class="fila-stat">
+            <h3>Extranjero</h3>
+            <p>5,785</p>
+        </div>
+        <hr class="linea-divisoria">
+        <div class="fila-stat total-general">
+            <h3>Total Votos</h3>
+            <p>189,881</p>
+        </div>
       </div>
 
       <!-- 2. Título Central -->
@@ -442,7 +471,7 @@
           if (response.ok) {
             datosVotos = await response.json();
             
-            // Sumar todos los votos para actualizar el recuadro "Total Nacional"
+    // Sumar todos los votos para actualizar el recuadro "Total Nacional"
             let sumaTotal = 0;
             for (const region in datosVotos) {
                 sumaTotal += datosVotos[region];
