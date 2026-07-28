@@ -17,13 +17,16 @@
         flex-direction: column;
         align-items: center;
       }
+      /* Estilos del Encabezado */
       .encabezado {
         width: 100%;
         max-width: 1000px;
         display: flex;
-        justify-content: space-between;
+        justify-content: space-between; /* Separa los elementos */
         align-items: center;
         margin-bottom: 20px;
+        flex-wrap: wrap; /* MAGIA: Permite que bajen de línea si no hay espacio */
+        gap: 15px; /* Da un respiro entre los elementos cuando se apilan */
       }
       .btn-volver {
         background-color: #6f9c76;
@@ -49,11 +52,9 @@
         height: 600px;
       }
 
-      /* Regla para celulares (pantallas pequeñas) */
       @media (max-width: 768px) {
         .encabezado {
           flex-direction: column;
-          gap: 15px;
           text-align: center;
         }
         .area-canvas {
@@ -80,41 +81,43 @@
       }
       /* Estilos del Recuadro de Votos Totales */
       .tarjeta-total {
-        position: absolute; /* Flota sobre el mapa */
-        top: 20px;
-        left: 20px; /* Lo ponemos a la izquierda, opuesto a tu botón */
         background-color: white;
-        padding: 15px 25px;
+        padding: 10px 20px;
         border-radius: 8px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         font-family: Arial, sans-serif;
-        z-index: 1000;
-        border-left: 6px solid #6f9c76; /* Verde como tu mapa */
+        border-left: 6px solid #6f9c76;
+        text-align: center;
+        min-width: 120px;
       }
       .tarjeta-total h3 {
         margin: 0;
-        font-size: 13px;
+        font-size: 11px;
         color: #7f8c8d;
         text-transform: uppercase;
-        letter-spacing: 1px;
       }
       .tarjeta-total p {
         margin: 5px 0 0 0;
-        font-size: 32px;
+        font-size: 24px;
         font-weight: bold;
         color: #2c3e50;
       }
     </style>
   </head>
   <body>
-    <div class="tarjeta-total">
-      <h3>Total Nacional</h3>
-      <p id="total-peru-numero">184,096</p>
-    </div>
     <div class="encabezado">
-      <h2 style="color: #2c3e50; margin: 0">
+      <!-- 1. La tarjeta del total -->
+      <div class="tarjeta-total">
+        <h3>Total Nacional</h3>
+        <p id="total-peru-numero">184,096</p>
+      </div>
+
+      <!-- 2. El título de la página -->
+      <h2 style="color: #2c3e50; margin: 0; text-align: center">
         Análisis de Votos Válidos (Pareto)
       </h2>
+
+      <!-- 3. El botón para regresar -->
       <a href="index.html" class="btn-volver">⬅ Volver al Mapa</a>
     </div>
 
