@@ -173,21 +173,9 @@
     <!-- BARRA SUPERIOR (TOTAL + TÍTULO + BOTONES) -->
     <header class="top-bar">
       <!-- 1. Total Nacional -->
-<!-- 1. Tarjeta de Totales Estáticos -->
       <div class="tarjeta-total">
-        <div class="fila-stat">
-            <h3>Nacional</h3>
-            <p>184,096</p>
-        </div>
-        <div class="fila-stat">
-            <h3>Extranjero</h3>
-            <p>5,785</p>
-        </div>
-        <hr class="linea-divisoria">
-        <div class="fila-stat total-general">
-            <h3>Total Votos</h3>
-            <p>189,881</p>
-        </div>
+        <h3>Total Nacional</h3>
+        <p id="total-peru-numero">Cargando...</p>
       </div>
 
       <!-- 2. Título Central -->
@@ -203,7 +191,7 @@
       <div class="botones-container">
         <a href="cascada.html" class="btn-accion btn-consulta">🔍 Consulta Detallada</a>
         <a href="estadistica.html" class="btn-accion btn-estadistica">📊 Diagrama de Pareto</a>
-        <a href="dni.html" class="btn-accion btn-dni">🔎 Consulta Mesa por Dni</a>
+        <a href="dni.html" class="btn-accion btn-dni">🔎 Dónde Votar</a>
       </div>
     </header>
     <main class="mapa-container">
@@ -467,11 +455,11 @@
         // 1. Cargar los datos desde el JSON
         let datosVotos = {};
         try {
-          const response = await fetch("votos_por_region.json");
+          const response = await fetch("votos_por_region2.json");
           if (response.ok) {
             datosVotos = await response.json();
             
-    // Sumar todos los votos para actualizar el recuadro "Total Nacional"
+            // Sumar todos los votos para actualizar el recuadro "Total Nacional"
             let sumaTotal = 0;
             for (const region in datosVotos) {
                 sumaTotal += datosVotos[region];
