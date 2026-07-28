@@ -446,11 +446,12 @@
     </main>
     <!-- 3. AQUÍ PONES EL JAVASCRIPT (Justo antes de cerrar el body) -->
 <!-- AQUÍ EMPIEZA EL SCRIPT DEL MAPA -->
+<!-- AQUÍ EMPIEZA EL SCRIPT DEL MAPA -->
+    <!-- AQUÍ EMPIEZA EL SCRIPT DEL MAPA -->
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         const regiones = document.querySelectorAll("#features path");
         const tooltip = document.getElementById("tooltip");
-        const textoTotal = document.getElementById("total-peru-numero");
 
         // 1. Cargar los datos desde el JSON
         let datosVotos = {};
@@ -458,25 +459,16 @@
           const response = await fetch("votos_por_region2.json");
           if (response.ok) {
             datosVotos = await response.json();
-            
-            // Sumar todos los votos para actualizar el recuadro "Total Nacional"
-            let sumaTotal = 0;
-            for (const region in datosVotos) {
-                sumaTotal += datosVotos[region];
-            }
-            textoTotal.innerText = sumaTotal.toLocaleString("es-PE");
-
           } else {
             console.error("Error al cargar el JSON");
-            textoTotal.innerText = "Error";
           }
         } catch (error) {
           console.error("No se pudo cargar el archivo JSON de votos:", error);
-          textoTotal.innerText = "Error";
         }
 
         // 2. Darle interactividad a cada región
         regiones.forEach((region) => {
+          
           // Efecto al pasar el ratón (Mostrar Tooltip con los votos)
           region.addEventListener("mousemove", (event) => {
             const nombreRegion = region.getAttribute("name");
@@ -503,6 +495,7 @@
             regiones.forEach((r) => r.classList.remove("activo"));
             this.classList.add("activo");
           });
+          
         });
       });
     </script>
