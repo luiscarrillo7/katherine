@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generador de Mapa e Infografía</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        padding: 20px;
+        color: #333;
+      }
+      .panel-control {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+      }
+      .grid-checkboxes {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+        margin-bottom: 20px;
+      }
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+      }
+      .checkbox-item input {
+        margin-right: 8px;
+      }
+      .btn-generar {
+        background: #2980b9;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .btn-generar:hover {
+        background: #3498db;
+      }
+      
+      /* --- ESTILOS DE LA INFOGRAFÍA --- */
+      .infografia-canvas {
+        display: none; /* Oculto hasta que se genere */
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        position: relative;
+        min-height: 600px; /* Espacio para el mapa y tarjetas */
+      }
+      .titulo-infografia {
+        color: #2c3e50;
+        margin-bottom: 30px;
+      }
+      /* Aquí irá el mapa SVG */
+      .mapa-centro {
+        width: 400px;
+        margin: 0 auto;
+        opacity: 0.8;
+      }
+      /* Las tarjetas estilo imagen del MEF */
+      .tarjetas-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .tarjeta-region {
+        background: white;
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        padding: 10px 20px;
+        text-align: center;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        min-width: 120px;
+      }
+      .tarjeta-region span {
+        display: block;
+        font-size: 12px;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .tarjeta-region strong {
+        font-size: 18px;
+        color: #2c3e50;
+      }
+    </style>
+  </head>
+  <body>
+
+    <a href="index.html" style="color: #2980b9; text-decoration: none; font-weight: bold;">⬅ Volver al Inicio</a>
+    
+    <h2 style="color: #2c3e50; margin-top: 20px;">🎨 Generador de Reporte Visual</h2>
+
+    <!-- PANEL DE SELECCIÓN -->
+    <div class="panel-control">
+      <p>Selecciona los departamentos que deseas incluir en la infografía:</p>
+      
+      <!-- Botones rápidos -->
+      <button type="button" id="btn-todos" style="margin-bottom: 10px; cursor:pointer;">Marcar Todos</button>
+      <button type="button" id="btn-ninguno" style="margin-bottom: 10px; cursor:pointer;">Desmarcar Todos</button>
+
+      <div class="grid-checkboxes" id="contenedor-checkboxes">
+        <!-- Los checkboxes se llenarán solos con JavaScript -->
+      </div>
+      
+      <button class="btn-generar" id="btn-generar">Generar Mapa</button>
+    </div>
+
+    <!-- ÁREA DE LA INFOGRAFÍA (El resultado visual) -->
+    <div class="infografia-canvas" id="resultado-infografia">
+      <h2 class="titulo-infografia">Resultados Oficiales por Región Seleccionada</h2>
+      
+      <!-- AQUÍ DEBES PEGAR TU ETIQUETA <svg> DEL MAPA DE PERÚ -->
+      <div class="mapa-centro">
+        <i>[Aquí aparecerá la silueta de tu mapa de Perú]</i>
+      </div>
+
+      <!-- Aquí aparecerán las tarjetitas flotantes -->
+      <div class="tarjetas-container" id="contenedor-tarjetas">
+      </div>
+    </div>
+
+    <script>
+      let baseDatos = {};
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const contenedorChecks = document.getElementById("contenedor-checkboxes");
+        const btnGenerar = document.getElementById("btn-generar");
+        const btnTodos = document.getElementById("btn-todos");
+        const btnNinguno = document.getElementById("btn-ninguno");
+        
+        // 1. Cargar datos y crear checkboxes automáticamente
+        try {
+          const respuesta = await fetch("jerarquia_completa.json");
+          baseDatos = await respuesta.json();
+
+          // Ordenar alfabéticamente
+          const departamentos = Object.keys(baseDatos).sort();
+
+          departamentos.forEach(dep => {
+            const div = document.createElement("div");
+            div.className = "checkbox-item";
+            div.innerHTML = `
+              <input type="checkbox" id="chk-${dep}" value="${dep}">
+              <label for="chk-${dep}">${dep}</label>
+            `;
+            contenedorChecks.appendChild(div);
+          });
+        } catch (error) {
+          console.error("Error cargando JSON:", error);
+          contenedorChecks.innerHTML = "<p style='color:red'>Error cargando la base de datos.</p>";
+        }
+
+        // 2. Lógica de Marcar/Desmarcar todos
+        btnTodos.addEventListener("click", () => {
+          document.querySelectorAll('.checkbox-item input').forEach(chk => chk.checked = true);
+        });
+        btnNinguno.addEventListener("click", () => {
+          document.querySelectorAll('.checkbox-item input').forEach(chk => chk.checked = false);
+        });
+
+        // 3. Lógica para Generar la Infografía
+        btnGenerar.addEventListener("click", () => {
+          const canvas = document.getElementById("resultado-infografia");
+          const contenedorTarjetas = document.getElementById("contenedor-tarjetas");
+          
+          // Limpiar tarjetas anteriores
+          contenedorTarjetas.innerHTML = "";
+          
+          // Obtener los que están marcados
+          const marcados = document.querySelectorAll('.checkbox-item input:checked');
+          
+          if(marcados.length === 0) {
+            alert("Por favor, selecciona al menos un departamento.");
+            return;
+          }
+
+          // Crear una tarjeta por cada departamento marcado
+          marcados.forEach(chk => {
+            const nombreDep = chk.value;
+            const votos = baseDatos[nombreDep].votos; // Lee los votos del JSON
+            
+            const tarjeta = document.createElement("div");
+            tarjeta.className = "tarjeta-region";
+            tarjeta.innerHTML = `
+              <span>${nombreDep}</span>
+              <strong>${votos.toLocaleString("es-PE")} votos</strong>
+            `;
+            contenedorTarjetas.appendChild(tarjeta);
+          });
+
+          // Mostrar el lienzo
+          canvas.style.display = "block";
+          
+          // Pequeño efecto de scroll hacia el mapa
+          canvas.scrollIntoView({ behavior: 'smooth' });
+        });
+
+      });
+    </script>
+  </body>
+</html>
