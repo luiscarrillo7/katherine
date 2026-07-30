@@ -136,13 +136,14 @@
           const response = await fetch("jerarquia_completa.json");
           db = await response.json();
 
-          // Llenar Departamentos
-          let totalNacional = 0;
+          // Llenar Departamentos (Ya no sumamos nada)
           for (const dep in db) {
             selDep.add(new Option(dep, dep));
-            totalNacional += db[dep].votos;
           }
-          txtVotos.innerText = totalNacional.toLocaleString("es-PE");
+          
+          // AQUÍ PONES TU DATO OFICIAL ESTÁTICO (con todo y comas)
+          txtVotos.innerText = "184,599"; 
+          txtNivel.innerText = "Votos Totales a nivel Nacional";
         } catch (error) {
           console.error("Error al cargar los datos:", error);
           txtVotos.innerText = "Error";
@@ -168,8 +169,8 @@
             for (const prov in db[dep].hijos)
               selProv.add(new Option(prov, prov));
           } else {
-            txtNivel.innerText = "Seleccione un Departamento";
-            txtVotos.innerText = "0";
+            txtNivel.innerText = "Votos Totales a nivel Nacional";
+            txtVotos.innerText = "184,599";
           }
         });
 
