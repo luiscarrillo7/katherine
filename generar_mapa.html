@@ -396,83 +396,131 @@
       </div>
     </div>
 
-    <script>
+<script>
       let baseDatos = {};
+      let departamentosSeleccionados = [];
 
       document.addEventListener("DOMContentLoaded", async () => {
         const contenedorChecks = document.getElementById("contenedor-checkboxes");
-        const btnGenerar = document.getElementById("btn-generar");
-        const btnTodos = document.getElementById("btn-todos");
-        const btnNinguno = document.getElementById("btn-ninguno");
         
-        // 1. Cargar datos y crear checkboxes automáticamente
+        // 1. Cargar JSON
         try {
           const respuesta = await fetch("jerarquia_completa.json");
           baseDatos = await respuesta.json();
-
-          // Ordenar alfabéticamente
           const departamentos = Object.keys(baseDatos).sort();
 
           departamentos.forEach(dep => {
             const div = document.createElement("div");
             div.className = "checkbox-item";
-            div.innerHTML = `
-              <input type="checkbox" id="chk-${dep}" value="${dep}">
-              <label for="chk-${dep}">${dep}</label>
-            `;
+            div.innerHTML = `<input type="checkbox" id="chk-${dep}" value="${dep}"> <label for="chk-${dep}">${dep}</label>`;
             contenedorChecks.appendChild(div);
           });
-        } catch (error) {
-          console.error("Error cargando JSON:", error);
-          contenedorChecks.innerHTML = "<p style='color:red'>Error cargando la base de datos.</p>";
+        } catch (e) {
+          console.error(e);
         }
 
-        // 2. Lógica de Marcar/Desmarcar todos
-        btnTodos.addEventListener("click", () => {
-          document.querySelectorAll('.checkbox-item input').forEach(chk => chk.checked = true);
-        });
-        btnNinguno.addEventListener("click", () => {
-          document.querySelectorAll('.checkbox-item input').forEach(chk => chk.checked = false);
-        });
+        document.getElementById("btn-todos").addEventListener("click", () => document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = true));
+        document.getElementById("btn-ninguno").addEventListener("click", () => document.querySelectorAll('.checkbox-item input').forEach(c => c.checked = false));
 
-        // 3. Lógica para Generar la Infografía
-        btnGenerar.addEventListener("click", () => {
-          const canvas = document.getElementById("resultado-infografia");
-          const contenedorTarjetas = document.getElementById("contenedor-tarjetas");
-          
-          // Limpiar tarjetas anteriores
-          contenedorTarjetas.innerHTML = "";
-          
-          // Obtener los que están marcados
+        // 2. Al dar click en Generar
+        document.getElementById("btn-generar").addEventListener("click", () => {
           const marcados = document.querySelectorAll('.checkbox-item input:checked');
-          
-          if(marcados.length === 0) {
-            alert("Por favor, selecciona al menos un departamento.");
-            return;
-          }
+          if(marcados.length === 0) return alert("Selecciona un departamento");
 
-          // Crear una tarjeta por cada departamento marcado
-          marcados.forEach(chk => {
-            const nombreDep = chk.value;
-            const votos = baseDatos[nombreDep].votos; // Lee los votos del JSON
+          const colIzq = document.getElementById("col-izq");
+          const colDer = document.getElementById("col-der");
+          colIzq.innerHTML = ""; colDer.innerHTML = "";
+          departamentosSeleccionados = [];
+
+          // Repartir tarjetas: una a la izquierda, una a la derecha
+          marcados.forEach((chk, index) => {
+            const dep = chk.value;
+            departamentosSeleccionados.push(dep);
             
             const tarjeta = document.createElement("div");
             tarjeta.className = "tarjeta-region";
-            tarjeta.innerHTML = `
-              <span>${nombreDep}</span>
-              <strong>${votos.toLocaleString("es-PE")} votos</strong>
-            `;
-            contenedorTarjetas.appendChild(tarjeta);
+            tarjeta.id = `tarjeta-${dep}`;
+            tarjeta.innerHTML = `<span>${dep}</span><strong>${baseDatos[dep].votos.toLocaleString("es-PE")} votos</strong>`;
+            
+            if(index % 2 === 0) colIzq.appendChild(tarjeta);
+            else colDer.appendChild(tarjeta);
           });
 
-          // Mostrar el lienzo
-          canvas.style.display = "block";
+          document.getElementById("resultado-infografia").style.display = "block";
           
-          // Pequeño efecto de scroll hacia el mapa
-          canvas.scrollIntoView({ behavior: 'smooth' });
+          // Esperamos 100ms para que el navegador dibuje las tarjetas antes de trazar las líneas
+          setTimeout(dibujarLineas, 100);
+          document.getElementById("resultado-infografia").scrollIntoView({ behavior: 'smooth' });
         });
 
+        // 3. Si la pantalla cambia de tamaño, redibujar líneas para que no se descuadren
+        window.addEventListener('resize', () => {
+          if(document.getElementById("resultado-infografia").style.display === "block") {
+            dibujarLineas();
+          }
+        });
       });
+
+      // --- LA MAGIA MATEMÁTICA PARA DIBUJAR LAS LÍNEAS ---
+      function dibujarLineas() {
+        const capaLineas = document.getElementById("capa-lineas");
+        const wrapper = document.getElementById("wrapper-infografia");
+        capaLineas.innerHTML = ""; // Limpiar líneas anteriores
+
+        // Obtener las coordenadas del contenedor principal para hacer matemáticas relativas
+        const rectWrapper = wrapper.getBoundingClientRect();
+
+        // Obtener todos los paths del mapa
+        const pathsMapa = document.querySelectorAll('#mapa-svg path');
+
+        departamentosSeleccionados.forEach((dep, index) => {
+          // Buscar el path correcto basándonos en el atributo 'name' (ignorando mayúsculas/minúsculas)
+          let pathMapa = null;
+          pathsMapa.forEach(p => {
+             if(p.getAttribute('name') && p.getAttribute('name').toUpperCase() === dep.toUpperCase()) {
+                 pathMapa = p;
+             }
+          });
+
+          const tarjeta = document.getElementById(`tarjeta-${dep}`);
+
+          if(pathMapa && tarjeta) {
+            const rectPath = pathMapa.getBoundingClientRect();
+            const rectTarjeta = tarjeta.getBoundingClientRect();
+
+            // Punto 1: El centro geográfico del departamento en el mapa
+            const xMapa = (rectPath.left + (rectPath.width / 2)) - rectWrapper.left;
+            const yMapa = (rectPath.top + (rectPath.height / 2)) - rectWrapper.top;
+
+            // Punto 2: El borde de la tarjeta (Borde derecho si está a la izquierda, y viceversa)
+            const esColumnaIzquierda = (index % 2 === 0);
+            // Ajustamos ligeramente la conexión a la tarjeta
+            const xTarjeta = esColumnaIzquierda ? (rectTarjeta.right - rectWrapper.left + 5) : (rectTarjeta.left - rectWrapper.left - 5); 
+            const yTarjeta = (rectTarjeta.top + (rectTarjeta.height / 2)) - rectWrapper.top;
+
+            // Crear la línea SVG principal
+            const linea = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            linea.setAttribute("x1", xMapa);
+            linea.setAttribute("y1", yMapa);
+            linea.setAttribute("x2", xTarjeta);
+            linea.setAttribute("y2", yTarjeta);
+            linea.setAttribute("stroke", "#34495e"); // Color de la línea
+            linea.setAttribute("stroke-width", "1.5");
+            
+            // Crear el puntito en el mapa
+            const punto = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            punto.setAttribute("cx", xMapa);
+            punto.setAttribute("cy", yMapa);
+            punto.setAttribute("r", "4");
+            punto.setAttribute("fill", "#2c3e50"); // Color del punto
+
+            capaLineas.appendChild(linea);
+            capaLineas.appendChild(punto);
+          } else {
+             console.warn(`No se pudo trazar la línea para ${dep}. ¿Falta el atributo 'name="${dep}"' en tu SVG?`);
+          }
+        });
+      }
     </script>
   </body>
 </html>
